@@ -1,94 +1,129 @@
 ﻿// Annette Hawks
 // Due 7/16/2025
-// Lab 8 Maze 
+// Lab 8 Maze
 
-//Rules &Introduction ish
+// Program correctly displays rules and introduction before game starts
 Console.WriteLine("MAZE RULES:\n" +
-                        "1. Use arrow keys to move.\n" +
-                        "2. Walls are '*'.\n" +
-                        "3. Reach the exit, '#' to win.\n" +
-                        "4. Bad Guys: '%'(move) and '&'(static).\n" +
-                        "5. Coins: '^' worth 100 points.\n" +
-                        "6. Gems: '$' worth 200 points.\n" +
-                        "Press any key to start...");
+                  "1. Use arrow keys to move.\n" +
+                  "2. Walls are '*'.\n" +
+                  "3. Reach the exit, '#' to win.\n" +
+                  "4. Bad Guys: '%'(move) and '&'(static).\n" +
+                  "5. Coins: '^' worth 100 points.\n" +
+                  "6. Gems: '$' worth 200 points.\n" +
+                  "Press any key to start...");
 Console.ReadKey(true);
 Console.Clear();
 
 // Program correctly loads the maze from the text file
 string[] mapRows = File.ReadAllLines("map.txt");
 
-// Program correctly loads the maze from the text file (display maze on screen)
+// Program correctly displays the maze on the screen
 foreach (string row in mapRows)
     Console.WriteLine(row);
 
-// Move the cursor position to the top left corner of the screen
-int playerRow = 0, playerCol = 0;
-Console.SetCursorPosition(playerCol, playerRow);
+// Initialize player position
+int playerRowIndex = 0;
+int playerColumnIndex = 0;
+
+// Set initial score to 0
+int playerScore = 0;
+
+// Move the cursor position to the top left corner and draw the player
+Console.SetCursorPosition(playerColumnIndex, playerRowIndex);
+Console.BackgroundColor = ConsoleColor.Blue;
+Console.ForegroundColor = ConsoleColor.Black;
 Console.Write('@');
+Console.ResetColor();
 
 while (true)
 {
     // Program correctly responds to arrows and the escape key by moving the cursor or exiting the program
-    ConsoleKey key = Console.ReadKey(true).Key;
-    int newRow = playerRow, newCol = playerCol;
+    ConsoleKey keyPressed = Console.ReadKey(true).Key;
 
-    switch (key)
+    int newRowIndex = playerRowIndex;
+    int newColumnIndex = playerColumnIndex;
+
+    switch (keyPressed)
     {
         case ConsoleKey.Escape:
-            return;  // Exit game
+            return; // Exit game
 
         case ConsoleKey.UpArrow:
-            newRow--;
+            newRowIndex--;
             break;
 
         case ConsoleKey.DownArrow:
-            newRow++;
+            newRowIndex++;
             break;
 
         case ConsoleKey.LeftArrow:
-            newCol--;
+            newColumnIndex--;
             break;
 
         case ConsoleKey.RightArrow:
-            newCol++;
+            newColumnIndex++;
             break;
     }
 
     // Program correctly enforces the boundaries of the buffer and the map
-    if (newRow < 0 || newRow >= mapRows.Length || newCol < 0 || newCol >= mapRows[newRow].Length)
+    if (newRowIndex < 0 || newRowIndex >= mapRows.Length || newColumnIndex < 0 || newColumnIndex >= mapRows[newRowIndex].Length)
     {
-        // Ignore move out of bounds
-        newRow = playerRow;
-        newCol = playerCol;
+        newRowIndex = playerRowIndex;
+        newColumnIndex = playerColumnIndex;
     }
     // Program correctly enforces the walls (i.e. * characters) on the map
-    else if (mapRows[newRow][newCol] == '*')
+    else if (mapRows[newRowIndex][newColumnIndex] == '*')
     {
-
-        newRow = playerRow;
-        newCol = playerCol;
+        newRowIndex = playerRowIndex;
+        newColumnIndex = playerColumnIndex;
     }
 
+    // Program correctly handles the static bad guy (&)
+    else if (mapRows[newRowIndex][newColumnIndex] == '&')
+    {
+        Console.Clear();
+        Console.WriteLine("You died in the cave!");
+        break;
+    }
 
-    Console.SetCursorPosition(playerCol, playerRow);
-    Console.Write(mapRows[playerRow][playerCol]);
+    // Erase old player position by redrawing the original maze character
+    Console.SetCursorPosition(playerColumnIndex, playerRowIndex);
+    Console.Write(mapRows[playerRowIndex][playerColumnIndex]);
+
+    // Handle scoring: Program correctly detects coins and gems and increases score
+    char tile = mapRows[newRowIndex][newColumnIndex];
+    if (tile == '^')
+    {
+        playerScore += 100;
+        mapRows[newRowIndex] = mapRows[newRowIndex].Remove(newColumnIndex, 1).Insert(newColumnIndex, " ");
+    }
+    else if (tile == '$')
+    {
+        playerScore += 200;
+        mapRows[newRowIndex] = mapRows[newRowIndex].Remove(newColumnIndex, 1).Insert(newColumnIndex, " ");
+    }
 
     // Update player position
-    playerRow = newRow;
-    playerCol = newCol;
+    playerRowIndex = newRowIndex;
+    playerColumnIndex = newColumnIndex;
 
-    // Player character (@) blue on a black backgroung
-    Console.SetCursorPosition(playerCol, playerRow);
+    // Redraw player character (@) with correct colors
+    Console.SetCursorPosition(playerColumnIndex, playerRowIndex);
     Console.BackgroundColor = ConsoleColor.Blue;
     Console.ForegroundColor = ConsoleColor.Black;
     Console.Write('@');
     Console.ResetColor();
 
     // Program correctly prints the win message when the player makes it to the goal
-    if (mapRows[playerRow][playerCol] == '#')
+    if (mapRows[playerRowIndex][playerColumnIndex] == '#')
     {
         Console.Clear();
         Console.WriteLine("You found the exit! You win!");
+        Console.WriteLine($"Final score: {playerScore}");
         break;
     }
+
+    // Display current score
+    Console.SetCursorPosition(0, mapRows.Length + 1);
+    Console.Write($"Score: {playerScore}     ");  // Extra spaces to overwrite previous score
 }
