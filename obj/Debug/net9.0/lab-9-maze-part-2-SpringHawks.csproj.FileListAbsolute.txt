@@ -1,0 +1,15 @@
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\bin\Debug\net9.0\lab-9-maze-part-2-SpringHawks.exe
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\bin\Debug\net9.0\lab-9-maze-part-2-SpringHawks.deps.json
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\bin\Debug\net9.0\lab-9-maze-part-2-SpringHawks.runtimeconfig.json
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\bin\Debug\net9.0\lab-9-maze-part-2-SpringHawks.dll
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\bin\Debug\net9.0\lab-9-maze-part-2-SpringHawks.pdb
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.AssemblyInfoInputs.cache
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.AssemblyInfo.cs
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.csproj.CoreCompileInputs.cache
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.sourcelink.json
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.dll
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\refint\lab-9-maze-part-2-SpringHawks.dll
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.pdb
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\lab-9-maze-part-2-SpringHawks.genruntimeconfig.cache
+C:\Users\14252\mySpringHawksCode\lab-9-maze-part-2-SpringHawks\obj\Debug\net9.0\ref\lab-9-maze-part-2-SpringHawks.dll
