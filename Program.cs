@@ -10,6 +10,7 @@ Console.WriteLine("MAZE RULES:\n" +
                   "4. Bad Guys: '%'(move) and '&'(static).\n" +
                   "5. Coins: '^' worth 100 points.\n" +
                   "6. Gems: '$' worth 200 points.\n" +
+                  "7. If you hit a bad guy, or are hit by a bad guy, you die.\n" +
                   "Press any key to start...");
 Console.ReadKey(true);
 Console.Clear();
@@ -28,12 +29,43 @@ int playerColumnIndex = 0;
 // Set initial score to 0
 int playerScore = 0;
 
-// Move the cursor position to the top left corner and draw the player
-Console.SetCursorPosition(playerColumnIndex, playerRowIndex);
-Console.BackgroundColor = ConsoleColor.Blue;
-Console.ForegroundColor = ConsoleColor.Black;
-Console.Write('@');
-Console.ResetColor();
+// Initialize moving bad guys positions (row, column)
+int badGuy1RowIndex = 5;
+int badGuy1ColumnIndex = 10;
+int badGuy1Direction = 1; // 1 means right, -1 means left
+
+int badGuy2RowIndex = 15;
+int badGuy2ColumnIndex = 28;
+int badGuy2Direction = 1; // 1 means right, -1 means left
+
+// Method to draw a character with color at specified position
+void DrawColoredChar(int row, int column, char ch, ConsoleColor foreground, ConsoleColor background = ConsoleColor.Black)
+{
+    Console.SetCursorPosition(column, row);
+    Console.BackgroundColor = background;
+    Console.ForegroundColor = foreground;
+    Console.Write(ch);
+    Console.ResetColor();
+}
+
+// Draw initial maze characters with colors
+for (int r = 0; r < mapRows.Length; r++)
+{
+    for (int c = 0; c < mapRows[r].Length; c++)
+    {
+        char ch = mapRows[r][c];
+        ConsoleColor color = ConsoleColor.White;
+
+        if (ch == '&') color = ConsoleColor.Red;
+        else if (ch == '^' || ch == '$') color = ConsoleColor.Yellow;
+        else if (ch == '#') color = ConsoleColor.Green;
+
+        DrawColoredChar(r, c, ch, color);
+    }
+}
+
+// Draw player at start
+DrawColoredChar(playerRowIndex, playerColumnIndex, '@', ConsoleColor.Black, ConsoleColor.Blue);
 
 while (true)
 {
@@ -86,9 +118,12 @@ while (true)
         break;
     }
 
-    // Erase old player position by redrawing the original maze character
-    Console.SetCursorPosition(playerColumnIndex, playerRowIndex);
-    Console.Write(mapRows[playerRowIndex][playerColumnIndex]);
+    // Erase old player position by redrawing the maze character beneath
+    DrawColoredChar(playerRowIndex, playerColumnIndex, mapRows[playerRowIndex][playerColumnIndex],
+                    mapRows[playerRowIndex][playerColumnIndex] == '&' ? ConsoleColor.Red :
+                    (mapRows[playerRowIndex][playerColumnIndex] == '^' || mapRows[playerRowIndex][playerColumnIndex] == '$') ? ConsoleColor.Yellow :
+                    mapRows[playerRowIndex][playerColumnIndex] == '#' ? ConsoleColor.Green :
+                    ConsoleColor.White);
 
     // Handle scoring: Program correctly detects coins and gems and increases score
     char tile = mapRows[newRowIndex][newColumnIndex];
@@ -108,11 +143,7 @@ while (true)
     playerColumnIndex = newColumnIndex;
 
     // Redraw player character (@) with correct colors
-    Console.SetCursorPosition(playerColumnIndex, playerRowIndex);
-    Console.BackgroundColor = ConsoleColor.Blue;
-    Console.ForegroundColor = ConsoleColor.Black;
-    Console.Write('@');
-    Console.ResetColor();
+    DrawColoredChar(playerRowIndex, playerColumnIndex, '@', ConsoleColor.Black, ConsoleColor.Blue);
 
     // Program correctly prints the win message when the player makes it to the goal
     if (mapRows[playerRowIndex][playerColumnIndex] == '#')
@@ -123,7 +154,55 @@ while (true)
         break;
     }
 
+    // Move moving bad guys (%) horizontally
+    // First erase old bad guy 1 position (restore maze char)
+    DrawColoredChar(badGuy1RowIndex, badGuy1ColumnIndex, mapRows[badGuy1RowIndex][badGuy1ColumnIndex],
+                    mapRows[badGuy1RowIndex][badGuy1ColumnIndex] == '&' ? ConsoleColor.Red :
+                    (mapRows[badGuy1RowIndex][badGuy1ColumnIndex] == '^' || mapRows[badGuy1RowIndex][badGuy1ColumnIndex] == '$') ? ConsoleColor.Yellow :
+                    mapRows[badGuy1RowIndex][badGuy1ColumnIndex] == '#' ? ConsoleColor.Green :
+                    ConsoleColor.White);
+
+    int nextBadGuy1ColumnIndex = badGuy1ColumnIndex + badGuy1Direction;
+    if (nextBadGuy1ColumnIndex < 0 || nextBadGuy1ColumnIndex >= mapRows[badGuy1RowIndex].Length ||
+        mapRows[badGuy1RowIndex][nextBadGuy1ColumnIndex] == '*' || mapRows[badGuy1RowIndex][nextBadGuy1ColumnIndex] == '&')
+    {
+        badGuy1Direction = -badGuy1Direction; // reverse direction
+        nextBadGuy1ColumnIndex = badGuy1ColumnIndex + badGuy1Direction;
+    }
+    badGuy1ColumnIndex = nextBadGuy1ColumnIndex;
+
+    // Draw bad guy 1
+    DrawColoredChar(badGuy1RowIndex, badGuy1ColumnIndex, '%', ConsoleColor.Red);
+
+    // First erase old bad guy 2 position (restore maze char)
+    DrawColoredChar(badGuy2RowIndex, badGuy2ColumnIndex, mapRows[badGuy2RowIndex][badGuy2ColumnIndex],
+                    mapRows[badGuy2RowIndex][badGuy2ColumnIndex] == '&' ? ConsoleColor.Red :
+                    (mapRows[badGuy2RowIndex][badGuy2ColumnIndex] == '^' || mapRows[badGuy2RowIndex][badGuy2ColumnIndex] == '$') ? ConsoleColor.Yellow :
+                    mapRows[badGuy2RowIndex][badGuy2ColumnIndex] == '#' ? ConsoleColor.Green :
+                    ConsoleColor.White);
+
+    int nextBadGuy2ColumnIndex = badGuy2ColumnIndex + badGuy2Direction;
+    if (nextBadGuy2ColumnIndex < 0 || nextBadGuy2ColumnIndex >= mapRows[badGuy2RowIndex].Length ||
+        mapRows[badGuy2RowIndex][nextBadGuy2ColumnIndex] == '*' || mapRows[badGuy2RowIndex][nextBadGuy2ColumnIndex] == '&')
+    {
+        badGuy2Direction = -badGuy2Direction; // reverse direction
+        nextBadGuy2ColumnIndex = badGuy2ColumnIndex + badGuy2Direction;
+    }
+    badGuy2ColumnIndex = nextBadGuy2ColumnIndex;
+
+    // Draw bad guy 2
+    DrawColoredChar(badGuy2RowIndex, badGuy2ColumnIndex, '%', ConsoleColor.Red);
+
+    // End the game if player hits a bad guy
+    if ((playerRowIndex == badGuy1RowIndex && playerColumnIndex == badGuy1ColumnIndex) ||
+        (playerRowIndex == badGuy2RowIndex && playerColumnIndex == badGuy2ColumnIndex))
+    {
+        Console.Clear();
+        Console.WriteLine("You were caught by a bad guy! Game over!");
+        break;
+    }
+
     // Display current score
     Console.SetCursorPosition(0, mapRows.Length + 1);
-    Console.Write($"Score: {playerScore}     ");  // Extra spaces to overwrite previous score
+    Console.Write($"Score: {playerScore}     ");  // Extra spaces to clear previous score
 }
